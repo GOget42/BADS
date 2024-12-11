@@ -58,16 +58,23 @@ def get_matching_flight_numbers(origin_code, destination_code, airline_code, fli
     return matching_flights
 
 # -----------------------
-# App Title
+# App Description
 # -----------------------
-st.title("✈️ Flight Delay Prediction Due to Weather ☁️")
+st.title("\u2708\ufe0f Flight Delay Predictor Due to Weather \u2601\ufe0f")
+st.markdown(
+    """
+    **Welcome!** This application predicts flight delays caused by weather conditions. Simply provide your flight details,
+    and the app will estimate how much delay you might experience. This is especially useful for planning your trips better.\n\n
+    *Disclaimer: This is a prediction based on historical data and realtime weather forecasts and assumes that there is a flight delay!*
+    """
+)
 
 # -----------------------
 # User Input Section
 # -----------------------
-st.subheader("🛫 Select Flight Details")
+st.subheader("Select Flight Details")
 
-# Create four columns for input fields: Origin, Destination, Departure, Arrival
+max_allowed_date = datetime.date.today() + datetime.timedelta(weeks=2)
 col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 
 with col1:
@@ -88,12 +95,22 @@ with col2:
 
 with col3:
     # Date and Time Input for Departure
-    departure_date = st.date_input("🗓️ Departure Date", value=datetime.date.today())
+    departure_date = st.date_input(
+        "🗓️🛫 Departure Date",
+        value=datetime.date.today(),
+        min_value=datetime.date.today(),
+        max_value=max_allowed_date
+    )
     departure_time = st.time_input("⏰ Departure Time", value=datetime.time(12, 0))
 
 with col4:
     # Date and Time Input for Arrival
-    arrival_date = st.date_input("🗓️ Arrival Date", value=datetime.date.today())
+    arrival_date = st.date_input(
+        "🗓️🛬 Arrival Date",
+        value=datetime.date.today(),
+        min_value=datetime.date.today(),
+        max_value=max_allowed_date
+    )
     arrival_time = st.time_input("⏰ Arrival Time", value=datetime.time(15, 0))
 
 # -----------------------
@@ -118,7 +135,7 @@ airlines = {
 
 # Selectbox for Airline Selection
 selected_airline = st.selectbox(
-    "✈️ Choose Your Airline",
+    "Choose Your Airline",
     options=airlines.keys(),
     index=0
 )
@@ -143,7 +160,7 @@ matching_flights = get_matching_flight_numbers(origin_code, destination_code, ai
 
 if matching_flights:
     selected_flight_number = st.selectbox(
-        "🛫 Choose Your Flight Number",
+        "Choose Your Flight Number",
         options=matching_flights,
         index=0
     )
@@ -218,7 +235,9 @@ if st.button("🔮 Predict Delay"):
         weekend_feature = is_departure_weekend or is_arrival_weekend
 
         # Validate that arrival is after departure
-        if arrival_datetime <= departure_datetime:
+        if departure_date > max_allowed_date or arrival_date > max_allowed_date:
+            st.error("🚫 Please select departure and arrival dates within two weeks from today.")
+        elif arrival_datetime <= departure_datetime:
             st.error("🚫 Arrival datetime must be after departure datetime.")
         else:
             # Feature Engineering
@@ -338,4 +357,7 @@ if st.button("🔮 Predict Delay"):
                 st.stop()
 
             # Display the prediction result
-            st.success(f"**Predicted Delay Due to Weather:** {predicted_delay:.1f} minutes 🕒")
+            st.success(
+                f"**Predicted Delay Due to Weather:** {predicted_delay:.1f} minutes 🕒\n\n"
+                f"*Note: This is just a prediction. The actual delay may lay between {round(predicted_delay-25, 0)} and {round(predicted_delay+25, 0)}.*"
+            )
