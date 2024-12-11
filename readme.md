@@ -1,6 +1,8 @@
 # Group 4: Capstone Project
 
 Welcome to the repository for Group 4's Capstone Project! This project brings together extensive datasets and cutting-edge analytics to uncover insights and drive impactful results. Below, you'll find details about our data sources and their origins.
+- **Link to GitHub**: https://github.com/GOget42/BADS
+- **Link to OneDrive**: https://universitaetstgallen-my.sharepoint.com/:f:/g/personal/eliavalentin_locher_student_unisg_ch/ErhyZu7KlEZFoRVem1gW6UQBnFCAgkv5Mov3YR2f1bTh4w?e=Q5sinN
 
 ## Data Sources
 
